@@ -53,26 +53,29 @@ public void realizarMovimiento(double monto) {
     }
   }
 
-  public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
-    Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
-    movimientos.add(movimiento); // No es tu responsabilidad crear el movimiento, deberías recibirlo por param (Dependency Injection)
-  }
-
+  
   public double getMontoExtraidoA(LocalDate fecha) {
-    return getMovimientos().stream()
-        .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
-        .mapToDouble(Movimiento::getMonto)
-        .sum(); // No es tu responsabilidad, es del Movimiento.
+    return buscarMovimientoPorFecha(fecha)
+    .mapToDouble(Movimiento::getMonto)
+    .sum();
   }
-
+  
+  private Stream<Movimiento> buscarMovimientoPorFecha(LocalDate fecha) {
+    return getMovimientos().stream()
+    .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha));
+  }
+  
+  public void agregarMovimiento(Movimiento movimiento) {
+    movimientos.add(movimiento);
+  }
   public List<Movimiento> getMovimientos() {
     return movimientos;
   }
-
+  
   public double getSaldo() {
     return saldo;
   }
-
+  
   public void setSaldo(double saldo) {
     this.saldo = saldo; 
   }
