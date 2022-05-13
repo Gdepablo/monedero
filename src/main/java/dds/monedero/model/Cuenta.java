@@ -2,25 +2,31 @@ package dds.monedero.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Cuenta {
 
   private double saldo = 0;
   private List<Movimiento> movimientos = new ArrayList<>();
+  private int cantDepositosDiarios = 3;
 
   public void setMovimientos(List<Movimiento> movimientos) {
     this.movimientos = movimientos;
   }
 
+  public Stream<Movimiento> filtrarDepositos() {
+   return movimientos.stream().filter(movimiento -> movimiento.isDeposito());
+  }
   public void validarMonto(double monto) {
     if (monto <= 0) 
       throw new RuntimeException(monto + ": el monto a ingresar debe ser un valor positivo");
   }
-  public void poner(double monto) {
+
+  public void realizarMovimiento(double monto) {
     validarMonto(monto);
 
-    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) { // Esto hay que separarlo, mucho pasamanos.
-      throw new RuntimeException("Ya excedio los " + 3 + " depositos diarios");
+    if (filtrarDepositos().count() >= 3) {
+      throw new RuntimeException("Ya excedio los " + cantDepositosDiarios + " depositos diarios");
     }
 
     new Movimiento(LocalDate.now(), monto, true).agregateA(this);
