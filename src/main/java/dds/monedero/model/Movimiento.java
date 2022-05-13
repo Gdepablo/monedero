@@ -24,29 +24,17 @@ public class Movimiento {
     return fecha;
   }
 
-  public boolean fueDepositado(LocalDate fecha) {
-    return isDeposito() && esDeLaFecha(fecha); // ??? Ni siquiera valida, y no sólo es poco declarativo sino que poco intuitivo
-  }
-
-  public boolean fueExtraido(LocalDate fecha) {
-    return isExtraccion() && esDeLaFecha(fecha); // ^ x2
-  }
-
   public boolean esDeLaFecha(LocalDate fecha) {
-    return this.fecha.equals(fecha); //Debería validar, esto no valida un choto
+    return this.fecha.equals(fecha);
   }
 
-  public boolean isDeposito() {
+  public boolean getOperacion() {
     return esDeposito;
-  }
-
-  public boolean isExtraccion() {
-    return !esDeposito;
   }
 
   public void agregateA(Cuenta cuenta) {
     cuenta.setSaldo(calcularValor(cuenta));
-    cuenta.agregarMovimiento(fecha, monto, esDeposito); // Como dije antes, es responsabilidad de esta class y no de cuenta...creo.
+    cuenta.agregarMovimiento(this);
   }
 
   public double calcularValor(Cuenta cuenta) {

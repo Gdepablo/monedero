@@ -16,7 +16,7 @@ public class Cuenta {
   }
 
   public Stream<Movimiento> filtrarDepositos() {
-  return movimientos.stream().filter(movimiento -> movimiento.isDeposito());
+  return movimientos.stream().filter(movimiento -> movimiento.getOperacion());
   }
 
   public void validarMonto(double monto) {
@@ -62,7 +62,7 @@ public void realizarMovimiento(double monto) {
   
   private Stream<Movimiento> buscarMovimientoPorFecha(LocalDate fecha) {
     return getMovimientos().stream()
-    .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha));
+    .filter(movimiento -> !movimiento.getOperacion() && movimiento.getFecha().equals(fecha));
   }
   
   public void agregarMovimiento(Movimiento movimiento) {
