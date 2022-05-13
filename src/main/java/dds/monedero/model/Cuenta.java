@@ -12,16 +12,18 @@ public class Cuenta {
     this.movimientos = movimientos;
   }
 
-  public void poner(double cuanto) {
-    if (cuanto <= 0) {
-      throw new RuntimeException(cuanto + ": el monto a ingresar debe ser un valor positivo");
-    }
+  public void validarMonto(double monto) {
+    if (monto <= 0) 
+      throw new RuntimeException(monto + ": el monto a ingresar debe ser un valor positivo");
+  }
+  public void poner(double monto) {
+    validarMonto(monto);
 
-    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
+    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) { // Esto hay que separarlo, mucho pasamanos.
       throw new RuntimeException("Ya excedio los " + 3 + " depositos diarios");
     }
 
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+    new Movimiento(LocalDate.now(), monto, true).agregateA(this);
   }
 // Poner y sacar repiten lógica (y validaciones)
   public void sacar(double cuanto) {
