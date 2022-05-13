@@ -35,24 +35,30 @@ public boolean esDeposito(double monto) {
   throw new RuntimeException("Ya excedio los " + cantDepositosDiarios + " depositos diarios");}
   }
 
-public void realizarMovimiento(double monto) {
-  excedioCantDepositosDiarios();
+public void retirarDinero(double monto) {
+  validarMonto(monto);
 
-  if (monto < 0 && (getSaldo() - monto) < 0) {
+  if (monto > saldo) {
   throw new RuntimeException("No puede sacar mas de " + saldo + " $");}
+
   double limite = limiteDiario - getMontoExtraidoA(LocalDate.now());
   alcanzoLimiteDiario(monto, limite);
   new Movimiento(LocalDate.now(), monto, esDeposito(monto)).agregateA(this);
   }
 
   private void alcanzoLimiteDiario(double monto, double limite) {
-    if (-1 * monto > limite) {
+    if (monto > limite) {
       throw new RuntimeException("No puede extraer mas de $ " + limiteDiario
           + " diarios, límite: " + limite);
     }
   }
 
-  
+  public void ingresarDinero(double monto) {
+    validarMonto(monto);
+    excedioCantDepositosDiarios();
+    new Movimiento(LocalDate.now(), monto, esDeposito(monto)).agregateA(this);
+  }
+
   public double getMontoExtraidoA(LocalDate fecha) {
     return buscarMovimientoPorFecha(fecha)
     .mapToDouble(Movimiento::getMonto)
