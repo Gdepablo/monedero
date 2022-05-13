@@ -5,47 +5,52 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class Cuenta {
-
+  
   private double saldo = 0;
   private List<Movimiento> movimientos = new ArrayList<>();
   private int cantDepositosDiarios = 3;
+  int limiteDiario = 1000;
 
   public void setMovimientos(List<Movimiento> movimientos) {
-    this.movimientos = movimientos;
+  this.movimientos = movimientos;
   }
 
   public Stream<Movimiento> filtrarDepositos() {
-   return movimientos.stream().filter(movimiento -> movimiento.isDeposito());
+  return movimientos.stream().filter(movimiento -> movimiento.isDeposito());
   }
+
   public void validarMonto(double monto) {
-    if (monto <= 0) 
-      throw new RuntimeException(monto + ": el monto a ingresar debe ser un valor positivo");
+  if (monto <= 0) 
+  throw new RuntimeException(monto + ": el monto a ingresar debe ser un valor positivo");
   }
 
-  public void realizarMovimiento(double monto) {
-    validarMonto(monto);
+public boolean esDeposito(double monto) {
+  if(monto > 0)
+  return true; 
+  return false;
+  };
 
-    if (filtrarDepositos().count() >= 3) {
-      throw new RuntimeException("Ya excedio los " + cantDepositosDiarios + " depositos diarios");
-    }
-
-    new Movimiento(LocalDate.now(), monto, true).agregateA(this);
+  public void excedioCantDepositosDiarios() {
+  if (filtrarDepositos().count() >= 3) {
+  throw new RuntimeException("Ya excedio los " + cantDepositosDiarios + " depositos diarios");}
   }
-// Poner y sacar repiten lógica (y validaciones)
-  public void sacar(double cuanto) {
-    if (cuanto <= 0) {
-      throw new RuntimeException(cuanto + ": el monto a ingresar debe ser un valor positivo");
-    }
-    if (getSaldo() - cuanto < 0) {
-      throw new RuntimeException("No puede sacar mas de " + getSaldo() + " $");
-    }
-    double montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
-    double limite = 1000 - montoExtraidoHoy;
-    if (cuanto > limite) {
-      throw new RuntimeException("No puede extraer mas de $ " + 1000
+
+public void realizarMovimiento(double monto) {
+  excedioCantDepositosDiarios();
+
+  if (monto < 0 && (getSaldo() - monto) < 0) {
+  throw new RuntimeException("No puede sacar mas de " + saldo + " $");}
+  double limite = limiteDiario - getMontoExtraidoA(LocalDate.now());
+  alcanzoLimiteDiario(monto, limite);
+  saldo+=monto;
+  new Movimiento(LocalDate.now(), monto, esDeposito(monto)).agregateA(this);
+  }
+
+  private void alcanzoLimiteDiario(double monto, double limite) {
+    if (-1 * monto > limite) {
+      throw new RuntimeException("No puede extraer mas de $ " + limiteDiario
           + " diarios, límite: " + limite);
     }
-    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
 
   public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
@@ -69,9 +74,6 @@ public class Cuenta {
   }
 
   public void setSaldo(double saldo) {
-    this.saldo = saldo; // Va al constructor.
+    this.saldo = saldo; 
   }
-
-
-  //Posible god object? Muchos métodos
 }
