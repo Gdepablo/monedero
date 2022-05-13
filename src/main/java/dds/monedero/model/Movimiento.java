@@ -38,10 +38,6 @@ public class Movimiento {
   }
 
   public double calcularValor(Cuenta cuenta) {
-    if (esDeposito) {
-      return cuenta.getSaldo() + getMonto();
-    } else { // Lógica repetida, se podría crear una función llamada modificarAhorros o algo así y , de querer restar, le paso un número negativo
-      return cuenta.getSaldo() - getMonto();
-    }
+    return cuenta.getSaldo() + monto; // monto < 0 resta, monto > 0 suma
   }
 }

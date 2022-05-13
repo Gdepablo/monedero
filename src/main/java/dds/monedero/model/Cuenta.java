@@ -42,7 +42,6 @@ public void realizarMovimiento(double monto) {
   throw new RuntimeException("No puede sacar mas de " + saldo + " $");}
   double limite = limiteDiario - getMontoExtraidoA(LocalDate.now());
   alcanzoLimiteDiario(monto, limite);
-  saldo+=monto;
   new Movimiento(LocalDate.now(), monto, esDeposito(monto)).agregateA(this);
   }
 
