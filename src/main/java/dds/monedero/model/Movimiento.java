@@ -25,15 +25,15 @@ public class Movimiento {
   }
 
   public boolean fueDepositado(LocalDate fecha) {
-    return isDeposito() && esDeLaFecha(fecha);
+    return isDeposito() && esDeLaFecha(fecha); // ??? Ni siquiera valida, y no sólo es poco declarativo sino que poco intuitivo
   }
 
   public boolean fueExtraido(LocalDate fecha) {
-    return isExtraccion() && esDeLaFecha(fecha);
+    return isExtraccion() && esDeLaFecha(fecha); // ^ x2
   }
 
   public boolean esDeLaFecha(LocalDate fecha) {
-    return this.fecha.equals(fecha);
+    return this.fecha.equals(fecha); //Debería validar, esto no valida un choto
   }
 
   public boolean isDeposito() {
@@ -46,13 +46,13 @@ public class Movimiento {
 
   public void agregateA(Cuenta cuenta) {
     cuenta.setSaldo(calcularValor(cuenta));
-    cuenta.agregarMovimiento(fecha, monto, esDeposito);
+    cuenta.agregarMovimiento(fecha, monto, esDeposito); // Como dije antes, es responsabilidad de esta class y no de cuenta...creo.
   }
 
   public double calcularValor(Cuenta cuenta) {
     if (esDeposito) {
       return cuenta.getSaldo() + getMonto();
-    } else {
+    } else { // Lógica repetida, se podría crear una función llamada modificarAhorros o algo así y , de querer restar, le paso un número negativo
       return cuenta.getSaldo() - getMonto();
     }
   }

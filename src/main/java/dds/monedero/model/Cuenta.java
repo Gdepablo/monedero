@@ -37,7 +37,7 @@ public class Cuenta {
 
     new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
   }
-
+// Poner y sacar repiten lógica (y validaciones)
   public void sacar(double cuanto) {
     if (cuanto <= 0) {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
@@ -56,14 +56,14 @@ public class Cuenta {
 
   public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
     Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
-    movimientos.add(movimiento);
+    movimientos.add(movimiento); // No es tu responsabilidad crear el movimiento, deberías recibirlo por param (Dependency Injection)
   }
 
   public double getMontoExtraidoA(LocalDate fecha) {
     return getMovimientos().stream()
         .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
-        .sum();
+        .sum(); // No es tu responsabilidad, es del Movimiento.
   }
 
   public List<Movimiento> getMovimientos() {
@@ -75,7 +75,9 @@ public class Cuenta {
   }
 
   public void setSaldo(double saldo) {
-    this.saldo = saldo;
+    this.saldo = saldo; // Va al constructor.
   }
 
+
+  //Posible god object? Muchos métodos
 }
